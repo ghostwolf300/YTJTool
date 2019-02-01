@@ -33,15 +33,15 @@ public class YTJService {
 			conn=(HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Content-Type", "application/json");
-			conn.setRequestProperty("Content-Length", ""+Integer.toString(urlParams.getBytes().length));
+			//conn.setRequestProperty("Content-Length", ""+Integer.toString(urlParams.getBytes().length));
 			//conn.setRequestProperty("Content-Language", "en-US");
-			conn.setUseCaches (false);
-			conn.setDoInput(true);
+			//conn.setUseCaches (false);
+			//conn.setDoInput(true);
 			conn.setDoOutput(true);
 			
 			DataOutputStream out=new DataOutputStream(conn.getOutputStream());
 			
-			out.writeBytes(urlParams);
+			//out.writeBytes(urlParams);
 			out.flush();
 			out.close();
 			
