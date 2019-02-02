@@ -18,7 +18,7 @@ public class YTJTool {
 	}
 	
 	private void findCompanyDetails(String businessId) {
-		BisCompanyDetails company=service.getCompanyDetails(businessId);
+		BisCompanyDetails companyDetails=service.getCompanyDetails(businessId);
 	}
 	
 
