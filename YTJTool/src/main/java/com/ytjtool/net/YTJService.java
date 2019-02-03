@@ -17,10 +17,14 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.ytjtool.pojo.BisAddress;
+import com.ytjtool.pojo.BisCompanyBusinessIdChange;
 import com.ytjtool.pojo.BisCompanyBusinessLine;
+import com.ytjtool.pojo.BisCompanyContactDetail;
 import com.ytjtool.pojo.BisCompanyDetails;
 import com.ytjtool.pojo.BisCompanyForm;
 import com.ytjtool.pojo.BisCompanyName;
+import com.ytjtool.pojo.BisCompanyRegisteredEntry;
+import com.ytjtool.pojo.BisCompanyRegisteredOffice;
 
 public class YTJService {
 	
@@ -93,6 +97,10 @@ public class YTJService {
 		companyDetails.setAddresses(createAddresses(resultsJson));
 		companyDetails.setCompanyForms(createCompanyForms(resultsJson));
 		companyDetails.setBusinessLines(createCompanyBusinessLines(resultsJson));
+		companyDetails.setRegisteredOffices(createCompanyOffices(resultsJson));
+		companyDetails.setContactDetails(createContactDetails(resultsJson));
+		companyDetails.setRegisteredEntries(createRegisteredEntries(resultsJson));
+		companyDetails.setBusinessIdChanges(createBusinessIdChanges(resultsJson));
 		return companyDetails;
 	}
 	
@@ -189,6 +197,81 @@ public class YTJService {
 			businessLines.add(businessLine);
 		}
 		return businessLines;
+	}
+	
+	private List<BisCompanyRegisteredOffice> createCompanyOffices(JSONObject results){
+		List<BisCompanyRegisteredOffice> offices=new ArrayList<BisCompanyRegisteredOffice>();
+		BisCompanyRegisteredOffice office=null;
+		JSONArray officesJson=(JSONArray) results.get("registedOffices");
+		for(Object officeObj : officesJson) {
+			JSONObject officeJson=(JSONObject) officeObj;
+			office=new BisCompanyRegisteredOffice();
+			office.setName((String) officeJson.get("name"));
+			office.setRegistrationDate((String) officeJson.get("registrationDate"));
+			office.setEndDate((String) officeJson.get("endDate"));
+			office.setLanguage((String) officeJson.get("language"));
+			office.setSource(Math.toIntExact((Long) officeJson.get("source")));
+			office.setVersion(Math.toIntExact((Long) officeJson.get("version")));
+			offices.add(office);
+		}
+		return offices;
+	}
+	
+	private List<BisCompanyContactDetail> createContactDetails(JSONObject results){
+		List<BisCompanyContactDetail> details=new ArrayList<BisCompanyContactDetail>();
+		BisCompanyContactDetail detail=null;
+		JSONArray detailsJson=(JSONArray) results.get("contactDetails");
+		for(Object detailObj : detailsJson) {
+			JSONObject detailJson=(JSONObject) detailObj;
+			detail=new BisCompanyContactDetail();
+			detail.setValue((String) detailJson.get("value"));
+			detail.setType((String) detailJson.get("type"));
+			detail.setRegistrationDate((String) detailJson.get("registrationDate"));
+			detail.setEndDate((String) detailJson.get("endDate"));
+			detail.setLanguage((String) detailJson.get("language"));
+			detail.setSource(Math.toIntExact((Long) detailJson.get("source")));
+			detail.setVersion(Math.toIntExact((Long) detailJson.get("version")));
+			details.add(detail);
+		}
+		return details;
+	}
+	
+	private List<BisCompanyRegisteredEntry> createRegisteredEntries(JSONObject results){
+		List<BisCompanyRegisteredEntry> entries=new ArrayList<BisCompanyRegisteredEntry>();
+		BisCompanyRegisteredEntry entry=null;
+		JSONArray entriesJson=(JSONArray) results.get("registeredEntries");
+		for(Object entryObj : entriesJson) {
+			JSONObject entryJson=(JSONObject) entryObj;
+			entry=new BisCompanyRegisteredEntry();
+			entry.setAuthority(Math.toIntExact((Long) entryJson.get("authority")));
+			entry.setDescription((String) entryJson.get("description"));
+			entry.setRegister(Math.toIntExact((Long) entryJson.get("register")));
+			entry.setStatus(Math.toIntExact((Long) entryJson.get("status")));
+			entry.setRegistrationDate((String) entryJson.get("registrationDate"));
+			entry.setEndDate((String) entryJson.get("endDate"));
+			entry.setLanguage((String) entryJson.get("language"));
+			entries.add(entry);
+		}
+		return entries;
+	}
+	
+	private List<BisCompanyBusinessIdChange> createBusinessIdChanges(JSONObject results){
+		List<BisCompanyBusinessIdChange> idChanges=new ArrayList<BisCompanyBusinessIdChange>();
+		BisCompanyBusinessIdChange idChange=null;
+		JSONArray idChangesJson=(JSONArray) results.get("businessIdChanges");
+		for(Object idChangeObj : idChangesJson) {
+			JSONObject idChangeJson=(JSONObject) idChangeObj;
+			idChange=new BisCompanyBusinessIdChange();
+			idChange.setChange((String) idChangeJson.get("change"));
+			idChange.setChangeDate((String) idChangeJson.get("changeDate"));
+			idChange.setOldBusinessId((String) idChangeJson.get("oldBusinessId"));
+			idChange.setNewBusinessId((String) idChangeJson.get("newBusinessId"));
+			idChange.setLanguage((String) idChangeJson.get("language"));
+			idChange.setDescription((String) idChangeJson.get("description"));
+			idChange.setSource(Math.toIntExact((Long) idChangeJson.get("source")));
+			idChanges.add(idChange);
+		}
+		return idChanges;
 	}
 	
 	
