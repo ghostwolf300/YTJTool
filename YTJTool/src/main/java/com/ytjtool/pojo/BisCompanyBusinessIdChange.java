@@ -1,11 +1,14 @@
 package com.ytjtool.pojo;
 
+import java.sql.Date;
+
 public class BisCompanyBusinessIdChange {
 	
+	private String businessId=null;
 	private int source=-1; //Nolla tarkoittaa yhteistä, yksi Patentti- ja rekisterihallitusta, kaksi Verohallintoa ja kolme yritys- ja yhteisötietojärjestelmää ,
 	private String description=null;
 	private String reason=null;
-	private String changeDate=null;
+	private Date changeDate=null;
 	private String change=null;
 	//2 = Yritystunnusten käytöstä poisto, 3 = Tuplatunnusten yhdistäminen, 5 = Tunnusmuutos, 44 = Sulautuminen, 45 = Alv-toiminnan jatkaja, 46 = Edeltäjä-suhde, 47 = Jakautuminen, 48 = Konkurssisuhde, 49 = Jatkaminen yksityisenä elinkeinonharjoittajana, 57 = Osittaisjakautuminen, DIF = Jakautuminen, FUU = Sulautuminen
 	private String oldBusinessId=null;
@@ -14,6 +17,14 @@ public class BisCompanyBusinessIdChange {
 	
 	public BisCompanyBusinessIdChange() {
 		super();
+	}
+
+	public String getBusinessId() {
+		return businessId;
+	}
+
+	public void setBusinessId(String businessId) {
+		this.businessId = businessId;
 	}
 
 	public int getSource() {
@@ -40,11 +51,11 @@ public class BisCompanyBusinessIdChange {
 		this.reason = reason;
 	}
 
-	public String getChangeDate() {
+	public Date getChangeDate() {
 		return changeDate;
 	}
 
-	public void setChangeDate(String changeDate) {
+	public void setChangeDate(Date changeDate) {
 		this.changeDate = changeDate;
 	}
 

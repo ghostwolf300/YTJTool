@@ -1,9 +1,9 @@
 create table tbl_company_details(
 	business_id varchar(9) not null,
 	name varchar(128) not null,
-	companyForm varchar(40),
+	company_form varchar(40),
 	registration_date date,
-	detailsUri varchar(40),
+	details_uri varchar(40),
 	primary key(business_id)
 );
 
@@ -33,7 +33,7 @@ create table tbl_address(
 	business_id varchar(9) not null constraint fk_address_business_id references tbl_company_details on delete cascade on update restrict,
 	address_type int not null,
 	version int not null,
-	careOf varchar(128),
+	care_of varchar(128),
 	street varchar(60),
 	post_code varchar(10),
 	city varchar(40),

@@ -1,11 +1,14 @@
 package com.ytjtool.pojo;
 
+import java.sql.Date;
+
 public class BisCompanyRegisteredEntry {
 	
+	private String businessId=null;
 	private String description=null;
 	private int status=-1; //Nolla tarkoittaa yhteisiä merkintöjä, yksi ”Rekisteröimätön” ja kaksi ”Rekisteröity”
-	private String registrationDate=null;
-	private String endDate=null;
+	private Date registrationDate=null;
+	private Date endDate=null;
 	private int register=-1;
 	//Yksi tarkoittaa kaupparekisteriä, kaksi säätiörekisteriä, kolme yhdistysrekisteriä, neljä Verohallintoa, viisi ennakkoperintärekisteriä, kuusi arvonlisäverovelvollisten rekisteriä, seitsemän työnantajarekisteriä ja kahdeksan vakuutusmaksuverovelvollisten rekisteriä
 	private String language=null;
@@ -13,6 +16,14 @@ public class BisCompanyRegisteredEntry {
 	
 	public BisCompanyRegisteredEntry() {
 		super();
+	}
+
+	public String getBusinessId() {
+		return businessId;
+	}
+
+	public void setBusinessId(String businessId) {
+		this.businessId = businessId;
 	}
 
 	public String getDescription() {
@@ -31,19 +42,19 @@ public class BisCompanyRegisteredEntry {
 		this.status = status;
 	}
 
-	public String getRegistrationDate() {
+	public Date getRegistrationDate() {
 		return registrationDate;
 	}
 
-	public void setRegistrationDate(String registrationDate) {
+	public void setRegistrationDate(Date registrationDate) {
 		this.registrationDate = registrationDate;
 	}
 
-	public String getEndDate() {
+	public Date getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(String endDate) {
+	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 

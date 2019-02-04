@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,9 +90,13 @@ public class YTJService {
 		JSONObject resultsJson=(JSONObject) ((JSONArray) companyJson.get("results")).get(0);
 		companyDetails.setBusinessId((String) resultsJson.get("businessId"));
 		companyDetails.setName((String) resultsJson.get("name"));
-		companyDetails.setRegistrationDate((String) resultsJson.get("registrationDate"));
+		String dateString=(String) resultsJson.get("registrationDate");
+		if(dateString!=null) {
+			companyDetails.setRegistrationDate(Date.valueOf(dateString));
+		}
 		companyDetails.setCompanyForm((String) resultsJson.get("companyForm"));
 		companyDetails.setDetailsUri((String) resultsJson.get("detailsUri"));
+		
 		companyDetails.setNames(createCompanyNames(resultsJson));
 		companyDetails.setAuxiliaryNames(createAuxiliaryNames(resultsJson));
 		companyDetails.setAddresses(createAddresses(resultsJson));
@@ -107,15 +112,23 @@ public class YTJService {
 	private List<BisCompanyName> createCompanyNames(JSONObject resultsJson){
 		List<BisCompanyName> companyNames=new ArrayList<BisCompanyName>();
 		BisCompanyName name=null;
+		String businessId=(String) resultsJson.get("businessId");
 		JSONArray namesJson=(JSONArray) resultsJson.get("names");
 		for(Object nameObj : namesJson) {
 			JSONObject nameJson=(JSONObject) nameObj;
 			name=new BisCompanyName();
+			name.setBusinessId(businessId);
 			name.setOrder(Math.toIntExact((Long) nameJson.get("order")));
 			name.setVersion(Math.toIntExact((Long) nameJson.get("version")));
 			name.setName((String) nameJson.get("name"));
-			name.setRegistrationDate((String) nameJson.get("registrationDate"));
-			name.setEndDate((String) nameJson.get("endDate"));
+			String regDateString=(String) nameJson.get("registrationDate");
+			if(regDateString!=null) {
+				name.setRegistrationDate(Date.valueOf(regDateString));
+			}
+			String endDateString=(String) nameJson.get("endDate");
+			if(endDateString!=null) {
+				name.setEndDate(Date.valueOf(endDateString));
+			}
 			name.setSource(Math.toIntExact((Long) nameJson.get("source")));
 			companyNames.add(name);
 		}
@@ -125,15 +138,23 @@ public class YTJService {
 	private List<BisCompanyName> createAuxiliaryNames(JSONObject resultsJson){
 		List<BisCompanyName> auxiliaryNames=new ArrayList<BisCompanyName>();
 		BisCompanyName name=null;
+		String businessId=(String) resultsJson.get("businessId");
 		JSONArray namesJson=(JSONArray) resultsJson.get("auxiliaryNames");
 		for(Object nameObj : namesJson) {
 			JSONObject nameJson=(JSONObject) nameObj;
 			name=new BisCompanyName();
+			name.setBusinessId(businessId);
 			name.setOrder(Math.toIntExact((Long) nameJson.get("order")));
 			name.setVersion(Math.toIntExact((Long) nameJson.get("version")));
 			name.setName((String) nameJson.get("name"));
-			name.setRegistrationDate((String) nameJson.get("registrationDate"));
-			name.setEndDate((String) nameJson.get("endDate"));
+			String regDateString=(String) nameJson.get("registrationDate");
+			if(regDateString!=null) {
+				name.setRegistrationDate(Date.valueOf(regDateString));
+			}
+			String endDateString=(String) nameJson.get("endDate");
+			if(endDateString!=null) {
+				name.setEndDate(Date.valueOf(endDateString));
+			}
 			name.setSource(Math.toIntExact((Long) nameJson.get("source")));
 			auxiliaryNames.add(name);
 		}
@@ -143,10 +164,12 @@ public class YTJService {
 	private List<BisAddress> createAddresses(JSONObject resultsJson){
 		List<BisAddress> addresses=new ArrayList<BisAddress>();
 		BisAddress address=null;
+		String businessId=(String) resultsJson.get("businessId");
 		JSONArray addressesJson=(JSONArray) resultsJson.get("addresses");
 		for(Object addressObj : addressesJson) {
 			JSONObject addressJson=(JSONObject) addressObj;
 			address=new BisAddress();
+			address.setBusinessId(businessId);
 			address.setCareOf((String) addressJson.get("careOf"));
 			address.setStreet((String) addressJson.get("street"));
 			address.setPostCode((String) addressJson.get("postCode"));
@@ -154,8 +177,14 @@ public class YTJService {
 			address.setCountry((String) addressJson.get("country"));
 			address.setType(Math.toIntExact((Long) addressJson.get("type")));
 			address.setVersion(Math.toIntExact((Long) addressJson.get("version")));
-			address.setRegistrationDate((String) addressJson.get("registrationDate"));
-			address.setEndDate((String) addressJson.get("endDate"));
+			String regDateString=(String) addressJson.get("registrationDate");
+			if(regDateString!=null) {
+				address.setRegistrationDate(Date.valueOf(regDateString));
+			}
+			String endDateString=(String) addressJson.get("endDate");
+			if(endDateString!=null) {
+				address.setEndDate(Date.valueOf(endDateString));
+			}
 			address.setLanguage((String) addressJson.get("language"));
 			addresses.add(address);
 		}
@@ -165,13 +194,21 @@ public class YTJService {
 	private List<BisCompanyForm> createCompanyForms(JSONObject results){
 		List<BisCompanyForm> companyForms=new ArrayList<BisCompanyForm>();
 		BisCompanyForm companyForm=null;
+		String businessId=(String) results.get("businessId");
 		JSONArray formsJson=(JSONArray) results.get("companyForms");
 		for(Object formObj : formsJson) {
 			JSONObject formJson=(JSONObject) formObj;
 			companyForm=new BisCompanyForm();
+			companyForm.setBusinessId(businessId);
 			companyForm.setName((String) formJson.get("name"));
-			companyForm.setRegistrationDate((String) formJson.get("registrationDate"));
-			companyForm.setEndDate((String) formJson.get("endDate"));
+			String regDateString=(String) formJson.get("registrationDate");
+			if(regDateString!=null) {
+				companyForm.setRegistrationDate(Date.valueOf(regDateString));
+			}
+			String endDateString=(String) formJson.get("endDate");
+			if(endDateString!=null) {
+				companyForm.setEndDate(Date.valueOf(endDateString));
+			}
 			companyForm.setLanguage((String) formJson.get("language"));
 			companyForm.setType((String) formJson.get("type"));
 			companyForm.setVersion(Math.toIntExact((Long)formJson.get("version")));
@@ -184,13 +221,21 @@ public class YTJService {
 	private List<BisCompanyBusinessLine> createCompanyBusinessLines(JSONObject results){
 		List<BisCompanyBusinessLine> businessLines=new ArrayList<BisCompanyBusinessLine>();
 		BisCompanyBusinessLine businessLine=null;
+		String businessId=(String) results.get("businessId");
 		JSONArray linesJson=(JSONArray) results.get("businessLines");
 		for(Object lineObj : linesJson) {
 			JSONObject lineJson=(JSONObject) lineObj;
 			businessLine=new BisCompanyBusinessLine();
+			businessLine.setBusinessId(businessId);
 			businessLine.setName((String) lineJson.get("name"));
-			businessLine.setRegistrationDate((String) lineJson.get("registrationDate"));
-			businessLine.setEndDate((String) lineJson.get("endDate"));
+			String regDateString=(String) lineJson.get("registrationDate");
+			if(regDateString!=null) {
+				businessLine.setRegistrationDate(Date.valueOf(regDateString));
+			}
+			String endDateString=(String) lineJson.get("endDate");
+			if(endDateString!=null) {
+				businessLine.setEndDate(Date.valueOf(endDateString));
+			}
 			businessLine.setLanguage((String) lineJson.get("language"));
 			businessLine.setVersion(Math.toIntExact((Long) lineJson.get("version")));
 			businessLine.setSource(Math.toIntExact((Long) lineJson.get("source")));
@@ -202,13 +247,21 @@ public class YTJService {
 	private List<BisCompanyRegisteredOffice> createCompanyOffices(JSONObject results){
 		List<BisCompanyRegisteredOffice> offices=new ArrayList<BisCompanyRegisteredOffice>();
 		BisCompanyRegisteredOffice office=null;
+		String businessId=(String) results.get("businessId");
 		JSONArray officesJson=(JSONArray) results.get("registedOffices");
 		for(Object officeObj : officesJson) {
 			JSONObject officeJson=(JSONObject) officeObj;
 			office=new BisCompanyRegisteredOffice();
+			office.setBusinessId(businessId);
 			office.setName((String) officeJson.get("name"));
-			office.setRegistrationDate((String) officeJson.get("registrationDate"));
-			office.setEndDate((String) officeJson.get("endDate"));
+			String regDateString=(String) officeJson.get("registrationDate");
+			if(regDateString!=null) {
+				office.setRegistrationDate(Date.valueOf(regDateString));
+			}
+			String endDateString=(String) officeJson.get("endDate");
+			if(endDateString!=null) {
+				office.setEndDate(Date.valueOf(endDateString));
+			}
 			office.setLanguage((String) officeJson.get("language"));
 			office.setSource(Math.toIntExact((Long) officeJson.get("source")));
 			office.setVersion(Math.toIntExact((Long) officeJson.get("version")));
@@ -220,14 +273,22 @@ public class YTJService {
 	private List<BisCompanyContactDetail> createContactDetails(JSONObject results){
 		List<BisCompanyContactDetail> details=new ArrayList<BisCompanyContactDetail>();
 		BisCompanyContactDetail detail=null;
+		String businessId=(String) results.get("businessId");
 		JSONArray detailsJson=(JSONArray) results.get("contactDetails");
 		for(Object detailObj : detailsJson) {
 			JSONObject detailJson=(JSONObject) detailObj;
 			detail=new BisCompanyContactDetail();
+			detail.setBusinessId(businessId);
 			detail.setValue((String) detailJson.get("value"));
 			detail.setType((String) detailJson.get("type"));
-			detail.setRegistrationDate((String) detailJson.get("registrationDate"));
-			detail.setEndDate((String) detailJson.get("endDate"));
+			String regDateString=(String) detailJson.get("registrationDate");
+			if(regDateString!=null) {
+				detail.setRegistrationDate(Date.valueOf(regDateString));
+			}
+			String endDateString=(String) detailJson.get("endDate");
+			if(endDateString!=null) {
+				detail.setEndDate(Date.valueOf(endDateString));
+			}
 			detail.setLanguage((String) detailJson.get("language"));
 			detail.setSource(Math.toIntExact((Long) detailJson.get("source")));
 			detail.setVersion(Math.toIntExact((Long) detailJson.get("version")));
@@ -239,16 +300,24 @@ public class YTJService {
 	private List<BisCompanyRegisteredEntry> createRegisteredEntries(JSONObject results){
 		List<BisCompanyRegisteredEntry> entries=new ArrayList<BisCompanyRegisteredEntry>();
 		BisCompanyRegisteredEntry entry=null;
+		String businessId=(String) results.get("businessId");
 		JSONArray entriesJson=(JSONArray) results.get("registeredEntries");
 		for(Object entryObj : entriesJson) {
 			JSONObject entryJson=(JSONObject) entryObj;
 			entry=new BisCompanyRegisteredEntry();
+			entry.setBusinessId(businessId);
 			entry.setAuthority(Math.toIntExact((Long) entryJson.get("authority")));
 			entry.setDescription((String) entryJson.get("description"));
 			entry.setRegister(Math.toIntExact((Long) entryJson.get("register")));
 			entry.setStatus(Math.toIntExact((Long) entryJson.get("status")));
-			entry.setRegistrationDate((String) entryJson.get("registrationDate"));
-			entry.setEndDate((String) entryJson.get("endDate"));
+			String regDateString=(String) entryJson.get("registrationDate");
+			if(regDateString!=null) {
+				entry.setRegistrationDate(Date.valueOf(regDateString));
+			}
+			String endDateString=(String) entryJson.get("endDate");
+			if(endDateString!=null) {
+				entry.setEndDate(Date.valueOf(endDateString));
+			}
 			entry.setLanguage((String) entryJson.get("language"));
 			entries.add(entry);
 		}
@@ -258,12 +327,17 @@ public class YTJService {
 	private List<BisCompanyBusinessIdChange> createBusinessIdChanges(JSONObject results){
 		List<BisCompanyBusinessIdChange> idChanges=new ArrayList<BisCompanyBusinessIdChange>();
 		BisCompanyBusinessIdChange idChange=null;
+		String businessId=(String) results.get("businessId");
 		JSONArray idChangesJson=(JSONArray) results.get("businessIdChanges");
 		for(Object idChangeObj : idChangesJson) {
 			JSONObject idChangeJson=(JSONObject) idChangeObj;
 			idChange=new BisCompanyBusinessIdChange();
+			idChange.setBusinessId(businessId);
 			idChange.setChange((String) idChangeJson.get("change"));
-			idChange.setChangeDate((String) idChangeJson.get("changeDate"));
+			String changeDateString=(String) idChangeJson.get("changeDate");
+			if(changeDateString!=null) {
+				idChange.setChangeDate(Date.valueOf(changeDateString));
+			}
 			idChange.setOldBusinessId((String) idChangeJson.get("oldBusinessId"));
 			idChange.setNewBusinessId((String) idChangeJson.get("newBusinessId"));
 			idChange.setLanguage((String) idChangeJson.get("language"));

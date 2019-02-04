@@ -1,11 +1,12 @@
 package com.ytjtool.pojo;
 
+import java.sql.Date;
 import java.util.List;
 
 public class BisCompanyDetails {
 	
 	private String businessId=null;
-	private String registrationDate=null;
+	private Date registrationDate=null;
 	private String companyForm=null;
 	private String detailsUri=null;
 	private String name=null;
@@ -34,11 +35,11 @@ public class BisCompanyDetails {
 		this.businessId = businessId;
 	}
 
-	public String getRegistrationDate() {
+	public Date getRegistrationDate() {
 		return registrationDate;
 	}
 
-	public void setRegistrationDate(String registrationDate) {
+	public void setRegistrationDate(Date registrationDate) {
 		this.registrationDate = registrationDate;
 	}
 
