@@ -80,7 +80,7 @@ public class DerbyCompanyDAO implements ICompanyDAO {
 		
 		if(company.getLiquidations()!=null) {
 			for(BisCompanyLiquidation liquid : company.getLiquidations()) {
-				
+				saveLiquidation(liquid,conn);
 			}
 		}
 		
@@ -168,6 +168,22 @@ public class DerbyCompanyDAO implements ICompanyDAO {
 		pstmnt.close();
 		
 	}
+	
+	public void saveLiquidation(BisCompanyLiquidation liquidation, Connection conn) throws SQLException{
+		String sqlInsertLiquidation="insert into tbl_liquidation (business_id,type_code,description,registration_date,end_date,version,source,language) "
+				+ "values(?,?,?,?,?,?,?,?)";
+		PreparedStatement pstmnt=conn.prepareStatement(sqlInsertLiquidation);
+		pstmnt.setString(1, liquidation.getBusinessId());
+		pstmnt.setString(2, liquidation.getType());
+		pstmnt.setString(3, liquidation.getDescription());
+		pstmnt.setDate(4, liquidation.getRegistrationDate());
+		pstmnt.setDate(5, liquidation.getEndDate());
+		pstmnt.setInt(6, liquidation.getVersion());
+		pstmnt.setInt(7, liquidation.getSource());
+		pstmnt.setString(8, liquidation.getLanguage());
+		pstmnt.executeUpdate();
+		pstmnt.close();
+	}
 
 	public void saveCompanies(List<BisCompanyDetails> companies) {
 		Connection conn=DerbyDAOFactory.createConnection();
@@ -212,6 +228,7 @@ public class DerbyCompanyDAO implements ICompanyDAO {
 			pstmnt.close();
 			
 			company.setAddresses(findAddressesById(businessId,conn));
+			company.setAuxiliaryNames(findAuxiliaryNamesById(businessId,conn));
 			
 		} 
 		catch (SQLException e) {
@@ -261,6 +278,44 @@ public class DerbyCompanyDAO implements ICompanyDAO {
 		return addresses;
 	}
 	
+	private List<BisCompanyName> findAuxiliaryNamesById(String businessId,Connection conn) throws SQLException{
+		
+		String sqlFindAuxNames="select business_id,name_order,version,name,registration_date,end_date,source from tbl_auxiliary_name where name_order<>0 and version=1 and business_id=?";
+		PreparedStatement pstmnt=conn.prepareStatement(sqlFindAuxNames);
+		List<BisCompanyName> auxNames=new ArrayList<BisCompanyName>();
+		pstmnt.setString(1, businessId);
+		ResultSet rs=null;
+		rs=pstmnt.executeQuery();
+		while(rs.next()) {
+			auxNames.add(createCompanyName(rs));
+		}
+		
+		pstmnt.close();
+		if(rs!=null) {
+			rs.close();
+		}
+		
+		return auxNames;
+	}
+	
+	private List<BisCompanyLiquidation> findLiquidations(String businessId,Connection conn) throws SQLException{
+		String sqlFindLiquidations="select business_id,type_code,description,registration_date,end_date,version,source,language "
+				+ "from tbl_liquidation where business_id=? and language='FI'";
+		PreparedStatement pstmnt=conn.prepareStatement(sqlFindLiquidations);
+		List<BisCompanyLiquidation> liquidations=new ArrayList<BisCompanyLiquidation>();
+		pstmnt.setString(1, businessId);
+		ResultSet rs=null;
+		rs=pstmnt.executeQuery();
+		while(rs.next()) {
+			liquidations.add(createLiquidation(rs));
+		}
+		pstmnt.close();
+		if(rs!=null) {
+			rs.close();
+		}
+		return liquidations;
+	}
+	
 	private BisAddress createAddress(ResultSet rs) throws SQLException {
 		BisAddress address=new BisAddress();
 		address.setBusinessId(rs.getString("business_id"));
@@ -274,10 +329,73 @@ public class DerbyCompanyDAO implements ICompanyDAO {
 		address.setCountry(rs.getString("country"));
 		return address;
 	}
+	
+	private BisCompanyName createCompanyName(ResultSet rs) throws SQLException{
+		BisCompanyName name=new BisCompanyName();
+		name.setBusinessId(rs.getString("business_id"));
+		name.setOrder(rs.getInt("name_order"));
+		name.setVersion(rs.getInt("version"));
+		name.setSource(rs.getInt("source"));
+		name.setName(rs.getString("name"));
+		name.setRegistrationDate(rs.getDate("registration_date"));
+		name.setEndDate(rs.getDate("end_date"));
+		return name;
+	}
+	
+	private BisCompanyLiquidation createLiquidation(ResultSet rs) throws SQLException{
+		BisCompanyLiquidation liq=new BisCompanyLiquidation();
+		liq.setBusinessId(rs.getString("business_id"));
+		liq.setType(rs.getString("type_code"));
+		liq.setDescription(rs.getString("description"));
+		liq.setRegistrationDate(rs.getDate("registration_date"));
+		liq.setEndDate(rs.getDate("end_date"));
+		return liq;
+	}
 
 	public List<BisCompanyDetails> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		String sqlFindAll="select * from tbl_company_details order by name";
+		
+		Connection conn=DerbyDAOFactory.createConnection();
+		PreparedStatement pstmnt=null;
+		List<BisCompanyDetails> companies=null;
+		ResultSet rs=null;
+		try {
+			pstmnt=conn.prepareStatement(sqlFindAll);
+			rs=pstmnt.executeQuery();
+			while(rs.next()){
+				if(companies==null) {
+					companies=new ArrayList<BisCompanyDetails>();
+				}
+				companies.add(createCompanyDetails(rs));
+			}
+			if(rs!=null) {
+				rs.close();
+			}
+			pstmnt.close();
+			
+			for(BisCompanyDetails company : companies) {
+				company.setAddresses(findAddressesById(company.getBusinessId(),conn));
+				company.setAuxiliaryNames(findAuxiliaryNamesById(company.getBusinessId(),conn));
+				company.setLiquidations(findLiquidations(company.getBusinessId(),conn));
+			}
+		} 
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			if(conn!=null) {
+				try {
+					conn.close();
+				} 
+				catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return companies;
 	}
 
 	public void removeAll() {
@@ -286,6 +404,34 @@ public class DerbyCompanyDAO implements ICompanyDAO {
 		String sqlRemoveAll="delete from tbl_company_details";
 		try {
 			pstmnt=conn.prepareStatement(sqlRemoveAll);
+			pstmnt.executeUpdate();
+			pstmnt.close();
+		} 
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			if(conn!=null) {
+				try {
+					conn.close();
+				} 
+				catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	}
+
+	public void removeCompany(String businessId) {
+		Connection conn=DerbyDAOFactory.createConnection();
+		PreparedStatement pstmnt=null;
+		String sqlRemoveAll="delete from tbl_company_details where business_id=?";
+		try {
+			pstmnt=conn.prepareStatement(sqlRemoveAll);
+			pstmnt.setString(1,businessId);
 			pstmnt.executeUpdate();
 			pstmnt.close();
 		} 

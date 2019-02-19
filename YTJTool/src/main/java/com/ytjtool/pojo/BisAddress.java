@@ -6,7 +6,7 @@ public class BisAddress extends BisBasic{
 	private String street=null;
 	private String postCode=null;
 	private String city=null;
-	private int type=-1; // Osoitteen laji, käyntiosoite 1 , postiosoite 2
+	private int type=-1; // Osoitteen laji, kï¿½yntiosoite 1 , postiosoite 2
 	private String country=null;
 	
 	public BisAddress() {
@@ -59,6 +59,11 @@ public class BisAddress extends BisBasic{
 
 	public void setCountry(String country) {
 		this.country = country;
+	}
+
+	@Override
+	public String toString() {
+		return street + " " + postCode + " "+city;
 	}
 	
 	

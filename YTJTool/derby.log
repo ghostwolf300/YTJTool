@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Tue Feb 05 10:37:53 EET 2019:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0168-bcce-7634-000006ef12f8 
+Tue Feb 19 13:42:30 EET 2019:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0169-0590-7f0f-0000071da828 
 on database directory C:\Users\ville.susi\git\YTJTool\YTJTool\YTJToolDB with class loader sun.misc.Launcher$AppClassLoader@73d16e93 
 Loaded from file:/C:/Users/ville.susi/.m2/repository/org/apache/derby/derby/10.14.2.0/derby-10.14.2.0.jar
 java.vendor=Oracle Corporation

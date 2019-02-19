@@ -23,6 +23,7 @@ import com.ytjtool.pojo.BisCompanyBusinessLine;
 import com.ytjtool.pojo.BisCompanyContactDetail;
 import com.ytjtool.pojo.BisCompanyDetails;
 import com.ytjtool.pojo.BisCompanyForm;
+import com.ytjtool.pojo.BisCompanyLiquidation;
 import com.ytjtool.pojo.BisCompanyName;
 import com.ytjtool.pojo.BisCompanyRegisteredEntry;
 import com.ytjtool.pojo.BisCompanyRegisteredOffice;
@@ -61,6 +62,9 @@ public class YTJService {
 				JSONParser parser=new JSONParser();
 				companyJson=(JSONObject) parser.parse(response.toString());
 			}
+			else {
+				System.out.println("HTTP Error "+responseCode);
+			}
 			
 		} 
 		catch (MalformedURLException e) {
@@ -80,12 +84,17 @@ public class YTJService {
 			}
 		}
 		
-		System.out.println(companyJson);
-		
-		return createCompanyDetails(companyJson);
+		//System.out.println(companyJson);
+		if(companyJson==null || companyJson.get("results")==null || ((JSONArray) companyJson.get("results")).size()==0) {
+			return null;
+		}
+		else {
+			return createCompanyDetails(companyJson);
+		}
 	}
 	
 	private BisCompanyDetails createCompanyDetails(JSONObject companyJson) {
+		
 		BisCompanyDetails companyDetails=new BisCompanyDetails();
 		JSONObject resultsJson=(JSONObject) ((JSONArray) companyJson.get("results")).get(0);
 		companyDetails.setBusinessId((String) resultsJson.get("businessId"));
@@ -106,6 +115,7 @@ public class YTJService {
 		companyDetails.setContactDetails(createContactDetails(resultsJson));
 		companyDetails.setRegisteredEntries(createRegisteredEntries(resultsJson));
 		companyDetails.setBusinessIdChanges(createBusinessIdChanges(resultsJson));
+		companyDetails.setLiquidations(createLiquidations(resultsJson));
 		return companyDetails;
 	}
 	
@@ -116,21 +126,23 @@ public class YTJService {
 		JSONArray namesJson=(JSONArray) resultsJson.get("names");
 		for(Object nameObj : namesJson) {
 			JSONObject nameJson=(JSONObject) nameObj;
-			name=new BisCompanyName();
-			name.setBusinessId(businessId);
-			name.setOrder(Math.toIntExact((Long) nameJson.get("order")));
-			name.setVersion(Math.toIntExact((Long) nameJson.get("version")));
-			name.setName((String) nameJson.get("name"));
-			String regDateString=(String) nameJson.get("registrationDate");
-			if(regDateString!=null) {
-				name.setRegistrationDate(Date.valueOf(regDateString));
+			if(nameJson.get("name")!=null) {
+				name=new BisCompanyName();
+				name.setBusinessId(businessId);
+				name.setOrder(Math.toIntExact((Long) nameJson.get("order")));
+				name.setVersion(Math.toIntExact((Long) nameJson.get("version")));
+				name.setName((String) nameJson.get("name"));
+				String regDateString=(String) nameJson.get("registrationDate");
+				if(regDateString!=null) {
+					name.setRegistrationDate(Date.valueOf(regDateString));
+				}
+				String endDateString=(String) nameJson.get("endDate");
+				if(endDateString!=null) {
+					name.setEndDate(Date.valueOf(endDateString));
+				}
+				name.setSource(Math.toIntExact((Long) nameJson.get("source")));
+				companyNames.add(name);
 			}
-			String endDateString=(String) nameJson.get("endDate");
-			if(endDateString!=null) {
-				name.setEndDate(Date.valueOf(endDateString));
-			}
-			name.setSource(Math.toIntExact((Long) nameJson.get("source")));
-			companyNames.add(name);
 		}
 		return companyNames;
 	}
@@ -142,21 +154,23 @@ public class YTJService {
 		JSONArray namesJson=(JSONArray) resultsJson.get("auxiliaryNames");
 		for(Object nameObj : namesJson) {
 			JSONObject nameJson=(JSONObject) nameObj;
-			name=new BisCompanyName();
-			name.setBusinessId(businessId);
-			name.setOrder(Math.toIntExact((Long) nameJson.get("order")));
-			name.setVersion(Math.toIntExact((Long) nameJson.get("version")));
-			name.setName((String) nameJson.get("name"));
-			String regDateString=(String) nameJson.get("registrationDate");
-			if(regDateString!=null) {
-				name.setRegistrationDate(Date.valueOf(regDateString));
+			if(nameJson.get("name")!=null) {
+				name=new BisCompanyName();
+				name.setBusinessId(businessId);
+				name.setOrder(Math.toIntExact((Long) nameJson.get("order")));
+				name.setVersion(Math.toIntExact((Long) nameJson.get("version")));
+				name.setName((String) nameJson.get("name"));
+				String regDateString=(String) nameJson.get("registrationDate");
+				if(regDateString!=null) {
+					name.setRegistrationDate(Date.valueOf(regDateString));
+				}
+				String endDateString=(String) nameJson.get("endDate");
+				if(endDateString!=null) {
+					name.setEndDate(Date.valueOf(endDateString));
+				}
+				name.setSource(Math.toIntExact((Long) nameJson.get("source")));
+				auxiliaryNames.add(name);
 			}
-			String endDateString=(String) nameJson.get("endDate");
-			if(endDateString!=null) {
-				name.setEndDate(Date.valueOf(endDateString));
-			}
-			name.setSource(Math.toIntExact((Long) nameJson.get("source")));
-			auxiliaryNames.add(name);
 		}
 		return auxiliaryNames;
 	}
@@ -346,6 +360,30 @@ public class YTJService {
 			idChanges.add(idChange);
 		}
 		return idChanges;
+	}
+	
+	private List<BisCompanyLiquidation> createLiquidations(JSONObject results){
+		List<BisCompanyLiquidation> liquidations=new ArrayList<BisCompanyLiquidation>();
+		BisCompanyLiquidation liq=null;
+		String businessId=(String) results.get("businessId");
+		JSONArray liquidationsJson=(JSONArray) results.get("liquidations");
+		for(Object liqObj : liquidationsJson) {
+			JSONObject liqJson=(JSONObject) liqObj;
+			liq=new BisCompanyLiquidation();
+			liq.setBusinessId(businessId);
+			liq.setType((String) liqJson.get("type"));
+			liq.setDescription((String) liqJson.get("description"));
+			liq.setRegistrationDate(Date.valueOf((String) liqJson.get("registrationDate")));
+			String endDateString=(String) liqJson.get("endDate");
+			if(endDateString!=null) {
+				liq.setEndDate(Date.valueOf(endDateString));
+			}
+			liq.setVersion(Math.toIntExact((Long) liqJson.get("version")));
+			liq.setSource(Math.toIntExact((Long) liqJson.get("source")));
+			liq.setLanguage((String) liqJson.get("language"));
+			liquidations.add(liq);
+		}
+		return liquidations;
 	}
 	
 	

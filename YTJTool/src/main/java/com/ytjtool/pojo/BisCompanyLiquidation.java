@@ -2,19 +2,19 @@ package com.ytjtool.pojo;
 
 public class BisCompanyLiquidation extends BisBasic {
 	
-	private String name=null; //Tieto mahdollisesta konkurssi-, selvitystila- tai saneerausmenettelystä ,
+	private String description=null; //Tieto mahdollisesta konkurssi-, selvitystila- tai saneerausmenettelystï¿½ ,
 	private String type=null; //Selvitystilan laji
 	
 	public BisCompanyLiquidation() {
 		super();
 	}
 
-	public String getName() {
-		return name;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setDescription(String name) {
+		this.description = name;
 	}
 
 	public String getType() {
@@ -23,6 +23,10 @@ public class BisCompanyLiquidation extends BisBasic {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+	
+	public String toString() {
+		return description+" reg.: "+registrationDate+" end: "+endDate;
 	}
 	
 	

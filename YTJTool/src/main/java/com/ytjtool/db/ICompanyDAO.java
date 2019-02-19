@@ -11,5 +11,6 @@ public interface ICompanyDAO {
 	public BisCompanyDetails findCompanyById(String businessId);
 	public List<BisCompanyDetails> findAll();
 	public void removeAll();
+	public void removeCompany(String businessId);
 	
 }

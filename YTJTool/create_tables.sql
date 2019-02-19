@@ -15,7 +15,7 @@ create table tbl_company_name(
 	registration_date date,
 	end_date date,
 	source int,
-	primary key(business_id,name_order,version)
+	primary key(business_id,name_order,version,source)
 );
 
 create table tbl_auxiliary_name(
@@ -26,7 +26,7 @@ create table tbl_auxiliary_name(
 	registration_date date,
 	end_date date,
 	source int,
-	primary key(business_id,name_order,version)
+	primary key(business_id,name_order,version,source)
 );
 
 create table tbl_address(
@@ -124,4 +124,16 @@ create table tbl_id_change(
 	description varchar(40),
 	source int,
 	primary key(business_id,change_date,change)
+);
+
+create table tbl_liquidation(
+	business_id varchar(9) not null constraint fk_liquidation_business_id references tbl_company_details on delete cascade on update restrict,
+	version int,
+	type_code varchar(10) not null,
+	description varchar(40),
+	language varchar(2) not null,
+	registration_date date not null,
+	end_date date,
+	source int,
+	primary key(business_id,type_code,registration_date,language)
 );

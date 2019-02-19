@@ -3,14 +3,14 @@ package com.ytjtool.pojo;
 import java.sql.Date;
 
 public abstract class BisBasic {
-	private String businessId=null;
-	private int source=-1; 
-	//Nolla tarkoittaa yhteistä, yksi Patentti- ja rekisterihallitusta, kaksi Verohallintoa ja kolme yritys- ja yhteisötietojärjestelmää
-	private int version=-1;
-	//Yksi tarkoittaa nykyistä versiota ja >1 historiallisia osoitteita
-	private Date registrationDate=null;
-	private Date endDate=null;
-	private String language=null;
+	protected String businessId=null;
+	protected int source=-1; 
+	//Nolla tarkoittaa yhteistï¿½, yksi Patentti- ja rekisterihallitusta, kaksi Verohallintoa ja kolme yritys- ja yhteisï¿½tietojï¿½rjestelmï¿½ï¿½
+	protected int version=-1;
+	//Yksi tarkoittaa nykyistï¿½ versiota ja >1 historiallisia osoitteita
+	protected Date registrationDate=null;
+	protected Date endDate=null;
+	protected String language=null;
 	
 	public BisBasic() {
 		
