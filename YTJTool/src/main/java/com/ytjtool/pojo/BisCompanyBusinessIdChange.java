@@ -5,12 +5,12 @@ import java.sql.Date;
 public class BisCompanyBusinessIdChange {
 	
 	private String businessId=null;
-	private int source=-1; //Nolla tarkoittaa yhteistä, yksi Patentti- ja rekisterihallitusta, kaksi Verohallintoa ja kolme yritys- ja yhteisötietojärjestelmää ,
+	private int source=-1; //Nolla tarkoittaa yhteistï¿½, yksi Patentti- ja rekisterihallitusta, kaksi Verohallintoa ja kolme yritys- ja yhteisï¿½tietojï¿½rjestelmï¿½ï¿½ ,
 	private String description=null;
 	private String reason=null;
 	private Date changeDate=null;
 	private String change=null;
-	//2 = Yritystunnusten käytöstä poisto, 3 = Tuplatunnusten yhdistäminen, 5 = Tunnusmuutos, 44 = Sulautuminen, 45 = Alv-toiminnan jatkaja, 46 = Edeltäjä-suhde, 47 = Jakautuminen, 48 = Konkurssisuhde, 49 = Jatkaminen yksityisenä elinkeinonharjoittajana, 57 = Osittaisjakautuminen, DIF = Jakautuminen, FUU = Sulautuminen
+	//2 = Yritystunnusten kï¿½ytï¿½stï¿½ poisto, 3 = Tuplatunnusten yhdistï¿½minen, 5 = Tunnusmuutos, 44 = Sulautuminen, 45 = Alv-toiminnan jatkaja, 46 = Edeltï¿½jï¿½-suhde, 47 = Jakautuminen, 48 = Konkurssisuhde, 49 = Jatkaminen yksityisenï¿½ elinkeinonharjoittajana, 57 = Osittaisjakautuminen, DIF = Jakautuminen, FUU = Sulautuminen
 	private String oldBusinessId=null;
 	private String newBusinessId=null;
 	private String language=null;
@@ -89,6 +89,10 @@ public class BisCompanyBusinessIdChange {
 
 	public void setLanguage(String language) {
 		this.language = language;
+	}
+	
+	public String toString() {
+		return changeDate+" code: "+change+" old: "+oldBusinessId+" new: "+newBusinessId;
 	}
 	
 }

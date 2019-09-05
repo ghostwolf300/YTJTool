@@ -25,3 +25,10 @@ alter table tbl_company_name add primary key (business_id,name_order,version,sou
 alter table tbl_auxiliary_name drop primary key;
 alter table tbl_auxiliary_name  alter column source not null;
 alter table tbl_auxiliary_name add primary key (business_id,name_order,version,source);
+
+drop table tbl_id_change;
+drop table tbl_auxiliary_name;
+
+alter table tbl_id_change drop primary key;
+alter table tbl_id_change  alter column old_business_id not null;
+alter table tbl_id_change add primary key(business_id,change_date,change,old_business_id,source);

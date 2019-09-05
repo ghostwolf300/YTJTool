@@ -63,7 +63,7 @@ public class YTJService {
 				companyJson=(JSONObject) parser.parse(response.toString());
 			}
 			else {
-				System.out.println("HTTP Error "+responseCode);
+				//System.out.println("HTTP Error "+responseCode);
 			}
 			
 		} 
@@ -344,7 +344,10 @@ public class YTJService {
 		String businessId=(String) results.get("businessId");
 		JSONArray idChangesJson=(JSONArray) results.get("businessIdChanges");
 		for(Object idChangeObj : idChangesJson) {
+			
 			JSONObject idChangeJson=(JSONObject) idChangeObj;
+			String language=(String) idChangeJson.get("language");
+			
 			idChange=new BisCompanyBusinessIdChange();
 			idChange.setBusinessId(businessId);
 			idChange.setChange((String) idChangeJson.get("change"));
@@ -354,10 +357,11 @@ public class YTJService {
 			}
 			idChange.setOldBusinessId((String) idChangeJson.get("oldBusinessId"));
 			idChange.setNewBusinessId((String) idChangeJson.get("newBusinessId"));
-			idChange.setLanguage((String) idChangeJson.get("language"));
+			idChange.setLanguage(language);
 			idChange.setDescription((String) idChangeJson.get("description"));
 			idChange.setSource(Math.toIntExact((Long) idChangeJson.get("source")));
 			idChanges.add(idChange);
+			
 		}
 		return idChanges;
 	}

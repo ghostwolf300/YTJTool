@@ -150,6 +150,22 @@ public class BisCompanyDetails {
 	public List<BisCompanyBusinessIdChange> getBusinessIdChanges() {
 		return businessIdChanges;
 	}
+	
+	public BisCompanyBusinessIdChange getLatestBusinessIdChange() {
+		Date d=null;
+		BisCompanyBusinessIdChange lastChange=null;
+		for(BisCompanyBusinessIdChange idChange : businessIdChanges) {
+			if(d==null) {
+				d=idChange.getChangeDate();
+				lastChange=idChange;
+			}
+			else if(idChange.getChangeDate().after(d)) {
+				d=idChange.getChangeDate();
+				lastChange=idChange;
+			}
+		}
+		return lastChange;
+	}
 
 	public void setBusinessIdChanges(List<BisCompanyBusinessIdChange> businessIdChanges) {
 		this.businessIdChanges = businessIdChanges;

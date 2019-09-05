@@ -19,27 +19,29 @@ create table tbl_company_name(
 );
 
 create table tbl_auxiliary_name(
+	id int not null generated always as identity (start with 1,increment by 1),
 	business_id varchar(9) not null constraint fk_auxiliary_name_business_id references tbl_company_details on delete cascade on update restrict,
-	name_order int not null,
-	version int not null,
+	name_order int,
+	version int,
 	name varchar(128) not null,
 	registration_date date,
 	end_date date,
 	source int,
-	primary key(business_id,name_order,version,source)
+	primary key(id)
 );
 
 create table tbl_address(
+	id int not null generated always as identity (start with 1,increment by 1),
 	business_id varchar(9) not null constraint fk_address_business_id references tbl_company_details on delete cascade on update restrict,
-	address_type int not null,
-	version int not null,
+	address_type int,
+	version int,
 	care_of varchar(128),
 	street varchar(60),
 	post_code varchar(10),
 	city varchar(40),
 	country varchar(2),
 	language varchar(2),
-	primary key(business_id,address_type,version)
+	primary key(id)
 );
 
 create table tbl_company_form(
@@ -115,6 +117,7 @@ create table tbl_registered_entry(
 );
 
 create table tbl_id_change(
+	id int not null generated always as identity (start with 1,increment by 1),
 	business_id varchar(9) not null constraint fk_id_change_business_id references tbl_company_details on delete cascade on update restrict,
 	change_date date,
 	change varchar(5),
@@ -123,7 +126,7 @@ create table tbl_id_change(
 	language varchar(2),
 	description varchar(40),
 	source int,
-	primary key(business_id,change_date,change)
+	primary key(id)
 );
 
 create table tbl_liquidation(

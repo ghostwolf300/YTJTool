@@ -28,6 +28,7 @@ public class DerbyCompanyDAO implements ICompanyDAO {
 		} 
 		catch (SQLException sqle) {
 			// TODO Auto-generated catch block
+			System.out.println("error business id: "+company.getBusinessId());
 			sqle.printStackTrace();
 		}
 		finally {
@@ -116,7 +117,7 @@ public class DerbyCompanyDAO implements ICompanyDAO {
 		
 		if(company.getBusinessIdChanges()!=null) {
 			for(BisCompanyBusinessIdChange idChange : company.getBusinessIdChanges()) {
-				
+				saveIdChange(idChange,conn);
 			}
 		}
 	}
@@ -169,7 +170,7 @@ public class DerbyCompanyDAO implements ICompanyDAO {
 		
 	}
 	
-	public void saveLiquidation(BisCompanyLiquidation liquidation, Connection conn) throws SQLException{
+	private void saveLiquidation(BisCompanyLiquidation liquidation, Connection conn) throws SQLException{
 		String sqlInsertLiquidation="insert into tbl_liquidation (business_id,type_code,description,registration_date,end_date,version,source,language) "
 				+ "values(?,?,?,?,?,?,?,?)";
 		PreparedStatement pstmnt=conn.prepareStatement(sqlInsertLiquidation);
@@ -181,6 +182,22 @@ public class DerbyCompanyDAO implements ICompanyDAO {
 		pstmnt.setInt(6, liquidation.getVersion());
 		pstmnt.setInt(7, liquidation.getSource());
 		pstmnt.setString(8, liquidation.getLanguage());
+		pstmnt.executeUpdate();
+		pstmnt.close();
+	}
+	
+	private void saveIdChange(BisCompanyBusinessIdChange idChange,Connection conn) throws SQLException{
+		String sqlInsertIdChange="insert into tbl_id_change (business_id,change_date,change,old_business_id,new_business_id,language,description,source) "
+				+"values(?,?,?,?,?,?,?,?)";
+		PreparedStatement pstmnt=conn.prepareStatement(sqlInsertIdChange);
+		pstmnt.setString(1, idChange.getBusinessId());
+		pstmnt.setDate(2, idChange.getChangeDate());
+		pstmnt.setString(3, idChange.getChange());
+		pstmnt.setString(4, idChange.getOldBusinessId());
+		pstmnt.setString(5, idChange.getNewBusinessId());
+		pstmnt.setString(6, idChange.getLanguage());
+		pstmnt.setString(7,idChange.getDescription());
+		pstmnt.setInt(8, idChange.getSource());
 		pstmnt.executeUpdate();
 		pstmnt.close();
 	}
@@ -229,6 +246,9 @@ public class DerbyCompanyDAO implements ICompanyDAO {
 			
 			company.setAddresses(findAddressesById(businessId,conn));
 			company.setAuxiliaryNames(findAuxiliaryNamesById(businessId,conn));
+			company.setLiquidations(findLiquidations(businessId,conn));
+			company.setBusinessIdChanges(findIdChanges(businessId,conn));
+			
 			
 		} 
 		catch (SQLException e) {
@@ -316,6 +336,24 @@ public class DerbyCompanyDAO implements ICompanyDAO {
 		return liquidations;
 	}
 	
+	private List<BisCompanyBusinessIdChange> findIdChanges(String businessId,Connection conn) throws SQLException{
+		String sqlFindIdChanges="select business_id,change_date,change,old_business_id,new_business_id,language,description,source "
+				+ "from tbl_id_change where business_id=?";
+		PreparedStatement pstmnt=conn.prepareStatement(sqlFindIdChanges);
+		List<BisCompanyBusinessIdChange> idChanges=new ArrayList<BisCompanyBusinessIdChange>();
+		pstmnt.setString(1, businessId);
+		ResultSet rs=null;
+		rs=pstmnt.executeQuery();
+		while(rs.next()) {
+			idChanges.add(createIdChange(rs));
+		}
+		pstmnt.close();
+		if(rs!=null) {
+			rs.close();
+		}
+		return idChanges;
+	}
+	
 	private BisAddress createAddress(ResultSet rs) throws SQLException {
 		BisAddress address=new BisAddress();
 		address.setBusinessId(rs.getString("business_id"));
@@ -351,6 +389,19 @@ public class DerbyCompanyDAO implements ICompanyDAO {
 		liq.setEndDate(rs.getDate("end_date"));
 		return liq;
 	}
+	
+	private BisCompanyBusinessIdChange createIdChange(ResultSet rs) throws SQLException{
+		BisCompanyBusinessIdChange idChange=new BisCompanyBusinessIdChange();
+		idChange.setBusinessId(rs.getString("business_id"));
+		idChange.setChangeDate(rs.getDate("change_date"));
+		idChange.setChange(rs.getString("change"));
+		idChange.setOldBusinessId(rs.getString("old_business_id"));
+		idChange.setNewBusinessId(rs.getString("new_business_id"));
+		idChange.setLanguage(rs.getString("language"));
+		idChange.setDescription(rs.getString("description"));
+		idChange.setSource(rs.getInt("source"));
+		return idChange;
+	}
 
 	public List<BisCompanyDetails> findAll() {
 		String sqlFindAll="select * from tbl_company_details order by name";
@@ -377,6 +428,7 @@ public class DerbyCompanyDAO implements ICompanyDAO {
 				company.setAddresses(findAddressesById(company.getBusinessId(),conn));
 				company.setAuxiliaryNames(findAuxiliaryNamesById(company.getBusinessId(),conn));
 				company.setLiquidations(findLiquidations(company.getBusinessId(),conn));
+				company.setBusinessIdChanges(findIdChanges(company.getBusinessId(),conn));
 			}
 		} 
 		catch (SQLException e) {

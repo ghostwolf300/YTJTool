@@ -21,13 +21,14 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.ytjtool.pojo.BisAddress;
+import com.ytjtool.pojo.BisCompanyBusinessIdChange;
 import com.ytjtool.pojo.BisCompanyDetails;
 import com.ytjtool.pojo.BisCompanyLiquidation;
 import com.ytjtool.pojo.BisCompanyName;
 
 public class Excel implements IFileOperations {
 	
-	public static final String[] COLUMNS= {"YTJID","Company Name","Alt Names","Street","Postcode","City","C/O","Status"};
+	public static final String[] COLUMNS= {"YTJID","Company Name","Alt Names","Street","Postcode","City","C/O","Change Date","ID Change","Old ID","New ID","Status"};
 	
 	public List<String> readYTJIDs(String fileName) {
 		Workbook workbook=null;
@@ -89,7 +90,7 @@ public class Excel implements IFileOperations {
 			row.createCell(1).setCellValue(company.getName());
 			String altNames="";
 			for(BisCompanyName cname : company.getAuxiliaryNames()) {
-				altNames+=cname.getName()+" ";
+				altNames+=cname.getName()+";";
 			}
 			row.createCell(2).setCellValue(altNames.trim());
 			BisAddress postAddress=null;
@@ -106,12 +107,20 @@ public class Excel implements IFileOperations {
 				row.createCell(6).setCellValue(postAddress.getCareOf());
 			}
 			
+			if(company.getBusinessIdChanges()!=null && company.getBusinessIdChanges().size()>0) {
+				BisCompanyBusinessIdChange idChange=company.getLatestBusinessIdChange();
+				row.createCell(7).setCellValue(idChange.getChangeDate());
+				row.createCell(8).setCellValue(idChange.getChange());
+				row.createCell(9).setCellValue(idChange.getOldBusinessId());
+				row.createCell(10).setCellValue(idChange.getNewBusinessId());
+			}
+			
 			if(company.getLiquidations()!=null && company.getLiquidations().size()>0) {
 				String status="";
 				for(BisCompanyLiquidation liq : company.getLiquidations()) {
-					status+=liq+" ";
+					status+=liq+";";
 				}
-				row.createCell(7).setCellValue(status.trim());
+				row.createCell(11).setCellValue(status.trim());
 			}
 			
 			r++;
